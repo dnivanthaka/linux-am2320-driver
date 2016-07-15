@@ -1,4 +1,4 @@
-obj-m += mpu6050.o
+obj-m += am2320.o
 
 all:
 		make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
