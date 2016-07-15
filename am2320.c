@@ -71,21 +71,17 @@ static int am2320_i2c_detect(struct i2c_client *client,
 static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 len){
     int ret;
     struct am2320_device *am2320;
-    u8 buffer[8];
     
     am2320 = i2c_get_clientdata(client);
     
     am2320->tbuffer[0] = func;
     am2320->tbuffer[1] = reg;
     am2320->tbuffer[2] = len;
-    buffer[0] = func;
-    buffer[1] = reg;
-    buffer[2] = len;
     
     //Wakeup device
     am2320_wakeup(client);
-    //mutex_lock(&am2320->lock);
-    ret = i2c_master_send(client, buffer, 3);
+    mutex_lock(&am2320->lock);
+    ret = i2c_master_send(client, am2320->tbuffer, 3);
     if(ret < 0){
         dev_err(&client->dev, "Failed to send commands\n");
         goto exit_lock;
@@ -93,15 +89,13 @@ static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 l
     // Delay as per datasheet
     usleep_range(2000, 3000);
     //ret = i2c_master_recv(device->client, device->tbuffer, len);
-    ret = i2c_master_recv(client, buffer, 8);
+    ret = i2c_master_recv(client, am2320->tbuffer, 8);
     if(ret < 0){
         dev_err(&client->dev, "Failed to read data\n");
         goto exit_lock;
     }
 
-
-    dev_info(&client->dev, "Read values = %x, %x, %x, %x\n", buffer[0], buffer[1], buffer[2], buffer[3]);
-    //mutex_unlock(&am2320->lock);
+    mutex_unlock(&am2320->lock);
     //Do a CRC here
     
 exit_lock:
@@ -141,18 +135,20 @@ static int am2320_i2c_probe(struct i2c_client *client,
     
     am2320->client = client;
     i2c_set_clientdata(client, am2320);
+    mutex_init(&am2320->lock);
         
     am2320_i2c_read_data(client, AM2320_I2C_FUNC_READ, AM2320_I2C_HIGH_HUMIDITY, 4);
 
-    dev_info(&client->dev, "Read values = %x, %x, %x, %x\n", am2320->tbuffer[0], am2320->tbuffer[1], am2320->tbuffer[2], am2320->tbuffer[3]);
+    dev_info(&client->dev, "Read values = %x, %x, %x, %x, %x, %x, %x, %x\n", am2320->tbuffer[0], am2320->tbuffer[1], am2320->tbuffer[2], am2320->tbuffer[3], am2320->tbuffer[4], am2320->tbuffer[5], am2320->tbuffer[6], am2320->tbuffer[7]);
 
+    /*
     error = request_threaded_irq(client->irq, NULL, 
             am2320_interrupt_thread,IRQF_TRIGGER_RISING | IRQF_ONESHOT,
             "am2320", am2320);
 
     if(error){
         dev_err(&client->dev, "Cannot get IRQ %d error %d", client->irq, error);
-    }
+    }*/
 
 err_free_res:
 
