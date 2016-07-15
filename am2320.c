@@ -48,8 +48,8 @@ struct am2320_data {
 };
 
 static int am2320_wakeup(struct i2c_client *client){
-    i2c_master_send(client, 0, 1);
-    //i2c_smbus_read_byte_data(client, AM2320_I2C_HIGH_HUMIDITY);
+    i2c_smbus_read_byte_data(client, AM2320_I2C_HIGH_HUMIDITY);
+    return 0;
 }
 
 static int am2320_i2c_detect(struct i2c_client *client, 
@@ -75,16 +75,16 @@ static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 l
     
     am2320 = i2c_get_clientdata(client);
     
-    //am2320->tbuffer[0] = func;
-    //am2320->tbuffer[1] = reg;
-    //am2320->tbuffer[2] = len;
+    am2320->tbuffer[0] = func;
+    am2320->tbuffer[1] = reg;
+    am2320->tbuffer[2] = len;
     buffer[0] = func;
     buffer[1] = reg;
     buffer[2] = len;
     
     //Wakeup device
-    //am2320_wakeup(client);
-    mutex_lock(&am2320->lock);
+    am2320_wakeup(client);
+    //mutex_lock(&am2320->lock);
     ret = i2c_master_send(client, buffer, 3);
     if(ret < 0){
         dev_err(&client->dev, "Failed to send commands\n");
@@ -98,11 +98,14 @@ static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 l
         dev_err(&client->dev, "Failed to read data\n");
         goto exit_lock;
     }
-    mutex_unlock(&am2320->lock);
+
+
+    dev_info(&client->dev, "Read values = %x, %x, %x, %x\n", buffer[0], buffer[1], buffer[2], buffer[3]);
+    //mutex_unlock(&am2320->lock);
     //Do a CRC here
     
 exit_lock:
-    mutex_unlock(&am2320->lock);
+    //mutex_unlock(&am2320->lock);
     return ret;
     
     
