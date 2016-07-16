@@ -38,11 +38,12 @@ cat /sys/class/i2c-adapter/i2c-1/1-005c/humidity1_input
 
 To remove from kernel
 =====================
+sudo bash
 echo 0x5c > /sys/class/i2c-adapter/i2c-1/delete_device
 
 then do,
 
-sudo rmmod am2320
+rmmod am2320
 
 Cleaning the directory
 =======================
