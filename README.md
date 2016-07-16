@@ -32,9 +32,9 @@ cat /sys/bus/i2c/devices/1-005c/humidity1_input
 
 OR
 
-/sys/class/i2c-adapter/i2c-1/1-005c/temp1_input
+cat /sys/class/i2c-adapter/i2c-1/1-005c/temp1_input
 
-/sys/class/i2c-adapter/i2c-1/1-005c/humidity1_input
+cat /sys/class/i2c-adapter/i2c-1/1-005c/humidity1_input
 
 To remove from kernel
 =====================
