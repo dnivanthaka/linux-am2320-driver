@@ -59,6 +59,7 @@ struct am2320_data {
 //------------- Prototypes ----------------------------//
 static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 len);
 static void am2320_update_data(struct i2c_client *client, struct am2320_data *data);
+static u16 am2320_crc16(u8 *ptr, u8 len);
 //-----------------------------------------------------//
 
 //----------- Sensor sysfs ---------------------------------------------------//
@@ -140,6 +141,7 @@ static int am2320_i2c_detect(struct i2c_client *client,
 // TODO CRC check
 static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 len){
     int ret;
+    u16 crc, crc2;
     struct am2320_device *am2320;
     
     am2320 = i2c_get_clientdata(client);
@@ -170,6 +172,10 @@ static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 l
 
     mutex_unlock(&am2320->lock);
     //Do a CRC here
+    crc = am2320_crc16(&am2320->tbuffer[2], 4);
+    crc2 = (am2320->tbuffer[6] << 8 | am2320->tbuffer[7]) ;
+    dev_info(&client->dev, "CRC = %d, %d\n", crc, crc2);
+
 
     return 0;
     
@@ -274,6 +280,24 @@ static int am2320_i2c_remove(struct i2c_client *client){
     am2320 = i2c_get_clientdata(client);
     
     return 0;
+}
+
+static u16 am2320_crc16(u8 *ptr, u8 len)
+{
+    u16 crc = 0xFFFF;
+    u8 i;
+    while(len--){
+        crc ^=*ptr++;
+        for(i=0;i<8;i++){
+           if(crc & 0x01){
+                crc>>=1;
+                crc^=0xA001;
+            }else{
+                crc>>=1;
+            }
+        }
+    }
+    return crc;
 }
 
 
