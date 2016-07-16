@@ -1,6 +1,8 @@
 # linux-am2320-driver
 Linux Device Driver for AM2302 
+
 **Experimental**
+
 Tested on a Raspberry pi 3 with kernel version 4.4.14-v7+
 
 Usage
