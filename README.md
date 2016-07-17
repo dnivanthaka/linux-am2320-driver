@@ -1,6 +1,8 @@
 # linux-am2320-driver
 Linux Device Driver for AM2302 
+
 **Experimental**
+
 Tested on a Raspberry pi 3 with kernel version 4.4.14-v7+
 
 Usage
@@ -25,16 +27,23 @@ You need to have the proper kernel headers installed to build this driver. Use t
 Viewing measurements
 ======================
 cat /sys/bus/i2c/devices/1-005c/temp1_input
+
 cat /sys/bus/i2c/devices/1-005c/humidity1_input
+
 OR
-/sys/class/i2c-adapter/i2c-1/1-005c/temp1_input
-/sys/class/i2c-adapter/i2c-1/1-005c/humidity1_input
+
+cat /sys/class/i2c-adapter/i2c-1/1-005c/temp1_input
+
+cat /sys/class/i2c-adapter/i2c-1/1-005c/humidity1_input
 
 To remove from kernel
 =====================
+sudo bash
 echo 0x5c > /sys/class/i2c-adapter/i2c-1/delete_device
+
 then do,
-sudo rmmod am2320
+
+rmmod am2320
 
 Cleaning the directory
 =======================
