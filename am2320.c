@@ -1,11 +1,29 @@
 /*
- *  AM2320 I2C Driver
+ *  AM2320 I2C Device Driver for Raspberry Pi
+ *  Copyright (c) 2016 D.N. Amerasinghe (nivanthaka@gmail.com) 
  *
  *  References 
  *  http://lxr.free-electrons.com/source/include/uapi/asm-generic/i2c.h
  *  http://lxr.free-electrons.com/source/include/uapi/asm-generic/errno-base.h
  *  http://lxr.free-electrons.com/source/Documentation/i2c/writing-clients
  *  https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
+ */
+
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
  */
 
 #include <linux/module.h>
@@ -332,5 +350,5 @@ static struct i2c_driver am2320_i2c_driver = {
 module_i2c_driver(am2320_i2c_driver);
 
 MODULE_AUTHOR("D.N. Amerasinghe <nivanthaka@gmail.com>");
-MODULE_DESCRIPTION("Am2320 I2C bus driver");
+MODULE_DESCRIPTION("AM2320 I2C bus driver");
 MODULE_LICENSE("GPL");
