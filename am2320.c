@@ -173,9 +173,15 @@ static int am2320_i2c_read_data(struct i2c_client *client, u8 func, u8 reg, u8 l
 
     mutex_unlock(&am2320->lock);
     //Do a CRC here
-    crc = am2320_crc16(&am2320->tbuffer[2], 4);
-    crc2 = (am2320->tbuffer[6] << 8 | am2320->tbuffer[7]) ;
-    dev_info(&client->dev, "CRC = %d, %d\n", crc, crc2);
+    crc = am2320_crc16(am2320->tbuffer, 6);
+    crc2 = (am2320->tbuffer[7] << 8 | am2320->tbuffer[6]) ;
+    //dev_info(&client->dev, "CRC = %d, %d\n", crc, crc2);
+    if(crc == crc2){
+        dev_info(&client->dev, "Data read is correct\n");
+    }else{
+        dev_info(&client->dev, "Data read is incorrect\n");
+        return -EAGAIN;
+    }
 
 
     return 0;
