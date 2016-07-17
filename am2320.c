@@ -99,10 +99,10 @@ static ssize_t temp_min(struct device *dev, struct device_attribute *attr,
     return sprintf(buf, "0\n");
 }
 
-static SENSOR_DEVICE_ATTR(temp1_max, S_IWUSR | S_IRUGO, temp_max, NULL,  100);
-static SENSOR_DEVICE_ATTR(temp1_min, S_IWUSR | S_IRUGO, temp_min, NULL,  0);
-static SENSOR_DEVICE_ATTR(temp1_input, S_IWUSR | S_IRUGO, temp_input, NULL,  0);
-static SENSOR_DEVICE_ATTR(humidity1_input, S_IWUSR | S_IRUGO, humidity_input, NULL,  0);
+static SENSOR_DEVICE_ATTR(temp1_max,  S_IRUGO | S_IROTH, temp_max, NULL,  100);
+static SENSOR_DEVICE_ATTR(temp1_min,  S_IRUGO | S_IROTH, temp_min, NULL,  0);
+static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO | S_IROTH, temp_input, NULL,  0);
+static SENSOR_DEVICE_ATTR(humidity1_input, S_IRUGO | S_IROTH, humidity_input, NULL,  0);
 
 //static struct attribute *am2320_attrs[] = {
 static struct device_attribute *am2320_attrs[] = {
@@ -112,6 +112,7 @@ static struct device_attribute *am2320_attrs[] = {
     &sensor_dev_attr_humidity1_input.dev_attr.attr,
     NULL
 };
+
 
 static const struct attribute_group am2320_group = {
     .attrs = am2320_attrs,
@@ -245,6 +246,7 @@ static int am2320_i2c_probe(struct i2c_client *client,
     device_create_file(&client->dev,  (const struct device_attribute *)&sensor_dev_attr_temp1_min);
     device_create_file(&client->dev,  (const struct device_attribute *)&sensor_dev_attr_temp1_input);
     device_create_file(&client->dev,  (const struct device_attribute *)&sensor_dev_attr_humidity1_input);
+
         
     /*am2320_i2c_read_data(client, AM2320_I2C_FUNC_READ, AM2320_I2C_HIGH_HUMIDITY, 4);
 
